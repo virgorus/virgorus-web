@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Itinerary" ALTER COLUMN "time" DROP NOT NULL,
+ALTER COLUMN "activity" DROP NOT NULL;

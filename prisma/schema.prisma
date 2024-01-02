@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Package {
+  id           String        @id @default(uuid())
+  name         String
+  description  String
+  type         String
+  location     String
+  duration     String
+  cancellation String
+  availability String
+  language     String
+  notice       String
+  photos       String[]
+  exclusions   String[]
+  inclusions   String[]
+  bookings     Booking[]
+  itinerary    DaySchedule[]
+  rates        Rates[]
+}
+
+model Rates {
+  id          Int     @id @default(autoincrement())
+  numberOfPax String
+  ratePerPax  String
+  packageId   String
+  package     Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+}
+
+model Itinerary {
+  id            Int         @id @default(autoincrement())
+  time          String?
+  activity      String?
+  dayScheduleId Int
+  daySchedule   DaySchedule @relation(fields: [dayScheduleId], references: [id], onDelete: Cascade)
+}
+
+model DaySchedule {
+  id          Int         @id @default(autoincrement())
+  day         String?
+  packageId   String
+  package     Package     @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  itineraries Itinerary[]
+}
+
+model Booking {
+  id               Int      @id @default(autoincrement())
+  fullName         String
+  email            String
+  contactNumber    String
+  numLocalGuests   Int
+  numForeignGuests Int
+  tourDate         DateTime
+  pickupInfo       String
+  packageId        String
+  package          Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                 String    @id @default(cuid())
+  userId             String
+  providerType       String
+  providerId         String
+  providerAccountId  String
+  refreshToken       String?
+  accessToken        String?
+  accessTokenExpires DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  user               User      @relation(fields: [userId], references: [id])
+
+  @@unique([providerId, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  expires      DateTime
+  sessionToken String   @unique
+  accessToken  String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+}
