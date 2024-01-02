@@ -7,7 +7,7 @@ const Dashboard = () => {
 	return (
 		<div className='flex flex-col gap-8 w-full h-fit'>
 			<div>
-				<h1 className='text-2xl font-bold'>Welcome Motherfucker!</h1>
+				<h1 className='text-2xl font-bold'>Welcome Admin</h1>
 			</div>
 			<div className='flex gap-8 items-center w-full justify-center'>
 				<UserCountCard />
